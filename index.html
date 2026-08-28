@@ -29,28 +29,10 @@
 <meta name="theme-color" content="#0ea5e9">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%230ea5e9' rx='128'/%3E%3Ccircle cx='256' cy='220' r='90' fill='%23f59e0b'/%3E%3Cpath d='M160 340a70 70 0 0 1 0-140 c10 0 20 2 28 6 a90 90 0 0 1 164 -20 a60 60 0 0 1 8 114 H160z' fill='%23ffffff'/%3E%3Ctext x='256' y='325' font-family='sans-serif' font-weight='900' font-size='100' fill='%230ea5e9' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%230ea5e9' rx='128'/%3E%3Ccircle cx='256' cy='220' r='90' fill='%23f59e0b'/%3E%3Cpath d='M160 340a70 70 0 0 1 0-140 c10 0 20 2 28 6 a90 90 0 0 1 164 -20 a60 60 0 0 1 8 114 H160z' fill='%23ffffff'/%3E%3Ctext x='256' y='325' font-family='sans-serif' font-weight='900' font-size='100' fill='%230ea5e9' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E">
-<link rel="manifest" id="manifest-link">
 
 <script>
-  const manifestData = {
-    "name": "Havasal Hava Durumu",
-    "short_name": "Havasal",
-    "start_url": "https://havasal.com.tr/",
-    "display": "standalone",
-    "background_color": "#e2e8f0",
-    "theme_color": "#0ea5e9",
-    "icons": [{
-      "src": "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%230ea5e9' rx='128'/%3E%3Ccircle cx='256' cy='220' r='90' fill='%23f59e0b'/%3E%3Cpath d='M160 340a70 70 0 0 1 0-140 c10 0 20 2 28 6 a90 90 0 0 1 164 -20 a60 60 0 0 1 8 114 H160z' fill='%23ffffff'/%3E%3Ctext x='256' y='325' font-family='sans-serif' font-weight='900' font-size='100' fill='%230ea5e9' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E",
-      "sizes": "512x512",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
-    }]
-  };
-  document.write('<link rel="manifest" href="data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifestData)) + '">');
-  
   window.tailwind = { config: { darkMode: 'class' } };
   
-  // LocalStorage Tema Kontrolü
   if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
     document.documentElement.classList.add('dark');
   } else {
@@ -61,12 +43,27 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root { --accent: #0ea5e9; }
+  /* KESİN RENK DEĞİŞKENLERİ - TAILWIND HATASINI EZER */
+  :root { 
+    --accent: #0ea5e9; 
+    --text-primary: #0f172a; /* Gündüz koyu lacivert/siyah */
+    --text-muted: #475569;   /* Gündüz gri */
+  }
+  .dark { 
+    --text-primary: #f8fafc; /* Gece bembeyaz */
+    --text-muted: #cbd5e1;   /* Gece açık gri */
+  }
+
   body {
     font-family: 'Inter', sans-serif; min-height: 100vh;
     margin: 0; overflow-x: hidden; -webkit-tap-highlight-color: transparent;
+    color: var(--text-primary); /* Tüm site geneli mecburi renk */
   }
   
+  /* Özel sınıf tanımları - JS ile eklenen yazılar için */
+  .txt-primary { color: var(--text-primary) !important; }
+  .txt-muted { color: var(--text-muted) !important; }
+
   #weather-fx { position: fixed; inset: 0; z-index: -1; transition: background 1s ease; overflow: hidden; }
   
   /* Temalar */
@@ -99,9 +96,11 @@
   
   .glass-input { background: rgba(255, 255, 255, 0.75); border: 1px solid rgba(255, 255, 255, 0.9); }
   .dark .glass-input { background: rgba(30, 41, 59, 0.7); border-color: rgba(255, 255, 255, 0.1); }
+  .glass-input input { color: var(--text-primary) !important; }
 
-  .model-tab { transition: all 0.2s; border-bottom: 2px solid transparent; white-space: nowrap; padding-bottom: 4px; }
+  .model-tab { transition: all 0.2s; border-bottom: 2px solid transparent; white-space: nowrap; padding-bottom: 4px; color: var(--text-muted); }
   .model-tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 800; }
+  
   .day-btn { transition: all 0.2s; border: 1px solid transparent; }
   .day-btn:hover { background: rgba(255,255,255,0.7); }
   .dark .day-btn:hover { background: rgba(255,255,255,0.1); }
@@ -145,7 +144,7 @@
           <text x="256" y="325" font-family="sans-serif" font-weight="900" font-size="100" fill="#0ea5e9" text-anchor="middle">H</text>
         </svg>
       </div>
-      <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Hava<span class="text-sky-500">sal</span></h1>
+      <h1 class="text-2xl font-bold tracking-tight txt-primary">Hava<span class="text-sky-500">sal</span></h1>
 
       <!-- Tema Değiştirme Butonu (Logonun Sağına Alındı) -->
       <button onclick="toggleTheme()" class="ml-2 w-9 h-9 rounded-xl bg-white/50 dark:bg-slate-800/50 flex items-center justify-center shadow-sm border border-slate-300 dark:border-slate-600 shrink-0 text-slate-700 dark:text-amber-400 hover:bg-white/80 dark:hover:bg-slate-700/80 transition-all" aria-label="Temayı Değiştir">
@@ -157,16 +156,16 @@
     
     <div class="relative w-full max-w-lg z-[100]">
       <div class="glass-input flex items-center px-5 py-3 rounded-2xl focus-within:ring-2 ring-sky-400 transition-all shadow-sm">
-        <svg class="w-5 h-5 text-slate-500 dark:text-slate-400 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-        <input id="city-input" type="text" placeholder="Şehir ara..." class="bg-transparent w-full outline-none text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 font-medium text-[16px]" autocomplete="off" />
+        <svg class="w-5 h-5 txt-muted mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        <input id="city-input" type="text" placeholder="Şehir ara..." class="bg-transparent w-full outline-none font-medium text-[16px]" autocomplete="off" />
         <div id="search-spinner" class="hidden text-sky-500 spin shrink-0"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></div>
       </div>
       <div id="results-list" class="hidden absolute top-full left-0 right-0 mt-2 bg-white/95 dark:bg-slate-800/95 backdrop-blur-2xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-2xl rounded-2xl max-h-64 overflow-y-auto p-2 z-[999]"></div>
     </div>
 
     <div class="flex flex-col items-center lg:items-end w-full lg:w-auto mt-1 lg:mt-0">
-      <span class="text-[10px] sm:text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest mb-1">Hava Modelleri</span>
-      <div class="flex space-x-4 sm:space-x-6 w-full justify-center overflow-x-auto custom-scroll pb-1 text-slate-700 dark:text-slate-300">
+      <span class="text-[10px] sm:text-xs font-bold txt-muted uppercase tracking-widest mb-1">Hava Modelleri</span>
+      <div class="flex space-x-4 sm:space-x-6 w-full justify-center overflow-x-auto custom-scroll pb-1">
         <button class="model-tab active text-sm sm:text-base shrink-0" data-model="gfs_seamless">GFS</button>
         <button class="model-tab text-sm sm:text-base shrink-0" data-model="ecmwf_ifs025">ECMWF</button>
         <button class="model-tab text-sm sm:text-base shrink-0" data-model="icon_seamless">ICON</button>
@@ -176,19 +175,19 @@
 
   <div id="loading-state" class="hidden py-16 text-center flex flex-col items-center glass-panel">
     <svg class="w-10 h-10 spin text-sky-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-    <span class="text-base sm:text-lg font-medium text-slate-700 dark:text-slate-300">Meteorolojik veriler işleniyor...</span>
+    <span class="text-base sm:text-lg font-medium txt-primary">Meteorolojik veriler işleniyor...</span>
   </div>
   
-  <div id="error-state" class="hidden py-6 text-center text-red-700 dark:text-red-400 glass-panel bg-red-50/90 dark:bg-red-900/20 border-red-200 dark:border-red-800 font-semibold"></div>
+  <div id="error-state" class="hidden py-6 text-center text-red-600 dark:text-red-400 glass-panel bg-red-50/90 dark:bg-red-900/20 border-red-200 dark:border-red-800 font-semibold"></div>
 
   <div id="data-state" class="fade-in hidden grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-8">
     
     <!-- SOL KOLON -->
     <div class="lg:col-span-3 flex flex-col gap-4 sm:gap-6">
       
+      <!-- Ana Mavi Kart - İçindeki her şey BEYAZ zorunlu kalacak -->
       <div class="glass-panel bg-gradient-to-br from-sky-500/95 to-blue-600/95 dark:from-sky-700/95 dark:to-blue-900/95 p-5 sm:p-8 relative overflow-hidden shadow-xl border-0 rounded-[1.5rem] sm:rounded-[2rem]">
         <div class="text-sky-100/90 text-[10px] sm:text-xs font-bold uppercase tracking-widest mb-1">Anlık Hava Durumu</div>
-        <!-- Bu kısımdaki yazıların aydınlık temada görünmesi için explicitly text-white atandı -->
         <h2 class="text-3xl sm:text-4xl font-extrabold mb-1 tracking-tight text-white" id="location-name">Malatya</h2>
         <p class="text-sky-100 text-sm sm:text-base mb-6 sm:mb-8 font-medium" id="current-date">--</p>
         <div class="flex items-center justify-between">
@@ -201,34 +200,34 @@
       </div>
 
       <div class="glass-panel p-4 sm:p-6 rounded-[1.5rem]">
-        <h3 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2 mb-2 sm:mb-3">
+        <h3 class="text-xs sm:text-sm font-bold txt-primary uppercase tracking-wider flex items-center gap-2 mb-2 sm:mb-3">
           <svg class="w-4 h-4 sm:w-5 sm:h-5 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
           Hava Özeti
         </h3>
-        <p id="daily-summary-text" class="text-sm sm:text-[15px] text-slate-700 dark:text-slate-300 leading-relaxed font-medium">--</p>
+        <p id="daily-summary-text" class="text-sm sm:text-[15px] txt-muted leading-relaxed font-medium">--</p>
       </div>
 
       <div class="glass-panel p-4 sm:p-6 rounded-[1.5rem]">
-        <h3 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2 mb-3 sm:mb-4">
+        <h3 class="text-xs sm:text-sm font-bold txt-primary uppercase tracking-wider flex items-center gap-2 mb-3 sm:mb-4">
           <svg class="w-4 h-4 sm:w-5 sm:h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
           Günlük Veriler
         </h3>
         <div class="grid grid-cols-2 gap-3 sm:gap-4">
           <div class="bg-white/70 dark:bg-slate-800/60 rounded-2xl p-3 sm:p-4 border border-white/90 dark:border-slate-700 shadow-sm overflow-hidden flex flex-col justify-center">
-            <div class="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wide mb-0.5 sm:mb-1 whitespace-nowrap">UV Endeksi</div>
-            <div class="text-base sm:text-lg font-black text-slate-900 dark:text-white truncate w-full" id="extra-uv">--</div>
+            <div class="text-[10px] sm:text-xs txt-muted font-bold uppercase tracking-wide mb-0.5 sm:mb-1 whitespace-nowrap">UV Endeksi</div>
+            <div class="text-base sm:text-lg font-black txt-primary truncate w-full" id="extra-uv">--</div>
           </div>
           <div class="bg-white/70 dark:bg-slate-800/60 rounded-2xl p-3 sm:p-4 border border-white/90 dark:border-slate-700 shadow-sm overflow-hidden flex flex-col justify-center">
-            <div class="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wide mb-0.5 sm:mb-1 whitespace-nowrap">Hava Kalitesi</div>
-            <div class="text-base sm:text-lg font-black text-slate-900 dark:text-white truncate w-full" id="extra-aqi">--</div>
+            <div class="text-[10px] sm:text-xs txt-muted font-bold uppercase tracking-wide mb-0.5 sm:mb-1 whitespace-nowrap">Hava Kalitesi</div>
+            <div class="text-base sm:text-lg font-black txt-primary truncate w-full" id="extra-aqi">--</div>
           </div>
           <div class="bg-white/70 dark:bg-slate-800/60 rounded-2xl p-3 sm:p-4 border border-white/90 dark:border-slate-700 shadow-sm overflow-hidden flex flex-col justify-center">
-            <div class="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wide mb-0.5 sm:mb-1 whitespace-nowrap">Yağış Süresi</div>
-            <div class="text-base sm:text-lg font-black text-slate-900 dark:text-white truncate w-full" id="extra-rainh">--</div>
+            <div class="text-[10px] sm:text-xs txt-muted font-bold uppercase tracking-wide mb-0.5 sm:mb-1 whitespace-nowrap">Yağış Süresi</div>
+            <div class="text-base sm:text-lg font-black txt-primary truncate w-full" id="extra-rainh">--</div>
           </div>
           <div class="bg-white/70 dark:bg-slate-800/60 rounded-2xl p-3 sm:p-4 border border-white/90 dark:border-slate-700 shadow-sm overflow-hidden flex flex-col justify-center">
-            <div class="text-[10px] sm:text-xs text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wide mb-0.5 sm:mb-1 whitespace-nowrap">Yıldırım</div>
-            <div class="text-base sm:text-lg font-black text-slate-900 dark:text-white truncate w-full" id="extra-thunder">--</div>
+            <div class="text-[10px] sm:text-xs txt-muted font-bold uppercase tracking-wide mb-0.5 sm:mb-1 whitespace-nowrap">Yıldırım</div>
+            <div class="text-base sm:text-lg font-black txt-primary truncate w-full" id="extra-thunder">--</div>
           </div>
         </div>
       </div>
@@ -239,51 +238,51 @@
       <div class="glass-panel p-4 sm:p-8 flex flex-col w-full rounded-[1.5rem] sm:rounded-[2rem]">
         
         <div class="mb-4 sm:mb-6 flex flex-col">
-          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white" id="middle-title">Bugün</h2>
+          <h2 class="text-2xl sm:text-3xl font-extrabold txt-primary" id="middle-title">Bugün</h2>
           <p class="text-xs sm:text-sm text-sky-600 dark:text-sky-400 mt-0.5 font-semibold" id="middle-subtitle">Günlük analiz</p>
         </div>
 
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-5 mb-6 sm:mb-8">
           <div class="bg-white/70 dark:bg-slate-800/60 rounded-2xl p-3 sm:p-4 flex flex-col justify-center border border-white/90 dark:border-slate-700 shadow-sm overflow-hidden min-w-0">
-            <div class="flex items-center gap-1.5 sm:gap-2 text-slate-600 dark:text-slate-400 mb-1 sm:mb-2 whitespace-nowrap">
+            <div class="flex items-center gap-1.5 sm:gap-2 txt-muted mb-1 sm:mb-2 whitespace-nowrap">
               <svg class="w-4 h-4 sm:w-5 sm:h-5 text-orange-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
               <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider" id="param-temp-label">Hissedilen</span>
             </div>
-            <div class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white truncate w-full" id="param-temp-val">--°</div>
+            <div class="text-xl sm:text-2xl font-black txt-primary truncate w-full" id="param-temp-val">--°</div>
           </div>
           <div class="bg-white/70 dark:bg-slate-800/60 rounded-2xl p-3 sm:p-4 flex flex-col justify-center border border-white/90 dark:border-slate-700 shadow-sm overflow-hidden min-w-0">
-            <div class="flex items-center gap-1.5 sm:gap-2 text-slate-600 dark:text-slate-400 mb-1 sm:mb-2 whitespace-nowrap">
+            <div class="flex items-center gap-1.5 sm:gap-2 txt-muted mb-1 sm:mb-2 whitespace-nowrap">
               <svg class="w-4 h-4 sm:w-5 sm:h-5 text-teal-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
               <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider">Rüzgar</span>
             </div>
-            <div class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white truncate w-full" id="param-wind-val">--</div>
+            <div class="text-xl sm:text-2xl font-black txt-primary truncate w-full" id="param-wind-val">--</div>
           </div>
           <div class="bg-white/70 dark:bg-slate-800/60 rounded-2xl p-3 sm:p-4 flex flex-col justify-center border border-white/90 dark:border-slate-700 shadow-sm overflow-hidden min-w-0">
-            <div class="flex items-center gap-1.5 sm:gap-2 text-slate-600 dark:text-slate-400 mb-1 sm:mb-2 whitespace-nowrap">
+            <div class="flex items-center gap-1.5 sm:gap-2 txt-muted mb-1 sm:mb-2 whitespace-nowrap">
               <svg class="w-4 h-4 sm:w-5 sm:h-5 text-blue-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
               <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider" id="param-hum-label">Nem</span>
             </div>
-            <div class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white truncate w-full" id="param-hum-val">--%</div>
+            <div class="text-xl sm:text-2xl font-black txt-primary truncate w-full" id="param-hum-val">--%</div>
           </div>
           <div class="bg-white/70 dark:bg-slate-800/60 rounded-2xl p-3 sm:p-4 flex flex-col justify-center border border-white/90 dark:border-slate-700 shadow-sm overflow-hidden min-w-0">
-            <div class="flex items-center gap-1.5 sm:gap-2 text-slate-600 dark:text-slate-400 mb-1 sm:mb-2 whitespace-nowrap">
+            <div class="flex items-center gap-1.5 sm:gap-2 txt-muted mb-1 sm:mb-2 whitespace-nowrap">
               <svg class="w-4 h-4 sm:w-5 sm:h-5 text-indigo-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/></svg>
               <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider">Yağış</span>
             </div>
-            <div class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white truncate w-full" id="param-precip-val">--</div>
+            <div class="text-xl sm:text-2xl font-black txt-primary truncate w-full" id="param-precip-val">--</div>
           </div>
         </div>
 
         <div class="mb-6 sm:mb-8 w-full">
           <div class="flex items-center justify-between mb-3">
-             <h3 class="text-[11px] sm:text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">Saatlik Tahmin</h3>
+             <h3 class="text-[11px] sm:text-xs font-bold txt-primary uppercase tracking-wider">Saatlik Tahmin</h3>
              <span class="text-[10px] sm:text-xs font-semibold text-sky-700 dark:text-sky-300 bg-sky-100 dark:bg-sky-900/50 px-2 py-0.5 sm:px-3 sm:py-1 rounded-full whitespace-nowrap">Detay için dokun</span>
           </div>
           <div class="flex overflow-x-auto gap-3 sm:gap-4 pb-3 snap-x custom-scroll w-full px-1" id="hourly-container"></div>
         </div>
         
         <div class="w-full">
-          <h3 class="text-[11px] sm:text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-3 flex items-center">
+          <h3 class="text-[11px] sm:text-xs font-bold txt-primary uppercase tracking-wider mb-3 flex items-center">
             <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
             Canlı Hava Radarı
           </h3>
@@ -298,7 +297,7 @@
     <!-- SAĞ KOLON -->
     <div class="lg:col-span-3">
       <div class="glass-panel p-4 sm:p-6 rounded-[1.5rem]">
-        <h3 class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider p-1 mb-3 flex items-center">
+        <h3 class="text-xs sm:text-sm font-bold txt-primary uppercase tracking-wider p-1 mb-3 flex items-center">
           <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
           7 Günlük Tahmin
         </h3>
@@ -311,15 +310,15 @@
 
 <!-- Alt Bilgi Çubuğu -->
 <footer class="max-w-[1400px] mx-auto mt-4 sm:mt-6 glass-panel px-4 py-4 flex items-center justify-center relative z-10 text-center shadow-sm">
-  <span class="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 tracking-wide">
+  <span class="text-xs sm:text-sm font-semibold txt-muted tracking-wide">
     Bir <strong class="text-sky-600 dark:text-sky-400 font-extrabold tracking-normal">BYD Media</strong> kuruluşudur. Tüm hakları saklıdır.
   </span>
 </footer>
 
 <div id="ios-pwa-prompt" class="hidden fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl border border-slate-200 dark:border-slate-700 shadow-2xl rounded-2xl p-4 w-[90%] max-w-sm z-[9999] text-center">
-  <p class="text-[15px] font-bold text-slate-900 dark:text-white mb-2">Uygulamayı iPhone'a Yükle!</p>
-  <p class="text-[13px] text-slate-600 dark:text-slate-300 mb-3 leading-tight">Tam ekran deneyimi için Safari'nin alt menüsünden <b class="text-blue-500 dark:text-blue-400">Paylaş</b> ikonuna dokun ve <b class="text-blue-500 dark:text-blue-400">"Ana Ekrana Ekle"</b> seçeneğini seç.</p>
-  <button onclick="document.getElementById('ios-pwa-prompt').style.display='none'" class="w-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors text-slate-900 dark:text-white font-bold py-2.5 rounded-xl text-sm">Anladım, Kapat</button>
+  <p class="text-[15px] font-bold txt-primary mb-2">Uygulamayı iPhone'a Yükle!</p>
+  <p class="text-[13px] txt-muted mb-3 leading-tight">Tam ekran deneyimi için Safari'nin alt menüsünden <b class="text-blue-500 dark:text-blue-400">Paylaş</b> ikonuna dokun ve <b class="text-blue-500 dark:text-blue-400">"Ana Ekrana Ekle"</b> seçeneğini seç.</p>
+  <button onclick="document.getElementById('ios-pwa-prompt').style.display='none'" class="w-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors txt-primary font-bold py-2.5 rounded-xl text-sm">Anladım, Kapat</button>
 </div>
 
 <script>
@@ -414,11 +413,11 @@
 
   function renderSearch(results){
     const box = $('results-list');
-    if(!results.length){ box.innerHTML = `<div class="p-4 text-[15px] text-slate-600 dark:text-slate-400 font-bold">Sonuç bulunamadı.</div>`; box.classList.remove('hidden'); return; }
+    if(!results.length){ box.innerHTML = `<div class="p-4 text-[15px] txt-muted font-bold">Sonuç bulunamadı.</div>`; box.classList.remove('hidden'); return; }
     box.innerHTML = results.map((r, i) => `
       <button data-idx="${i}" class="search-item w-full text-left px-5 py-3 hover:bg-slate-100 dark:hover:bg-slate-700 border-b border-slate-200 dark:border-slate-700 last:border-0 transition-colors">
-        <div class="text-[16px] font-bold text-slate-900 dark:text-white">${r.name}</div>
-        <div class="text-sm text-slate-600 dark:text-slate-400 mt-1 font-medium">${r.admin1 ? r.admin1 + ', ' : ''}${r.country || ''}</div>
+        <div class="text-[16px] font-bold txt-primary">${r.name}</div>
+        <div class="text-sm txt-muted mt-1 font-medium">${r.admin1 ? r.admin1 + ', ' : ''}${r.country || ''}</div>
       </button>
     `).join('');
     box.classList.remove('hidden');
@@ -493,11 +492,11 @@
 
       return `
         <button onclick="selectDay(${i})" class="day-btn ${isActive} w-full flex flex-row items-center justify-between p-3 sm:p-4 rounded-2xl cursor-pointer">
-          <span class="text-[14px] sm:text-[15px] text-left font-bold text-slate-900 dark:text-white w-14 sm:w-16 whitespace-nowrap">${dayName}</span>
+          <span class="text-[14px] sm:text-[15px] text-left font-bold w-14 sm:w-16 whitespace-nowrap txt-primary">${dayName}</span>
           <div class="w-8 h-8 sm:w-10 sm:h-10 flex justify-center items-center shrink-0 svg-icon-wrapper">${dayCond[1]}</div>
           <div class="text-right flex justify-end gap-2 sm:gap-3 shrink-0 w-20 sm:w-24">
-            <span class="text-slate-500 dark:text-slate-400 font-bold text-[14px] sm:text-[15px]">${cMin}</span>
-            <span class="font-black text-slate-900 dark:text-white text-[14px] sm:text-[15px]">${cMax}</span>
+            <span class="font-bold text-[14px] sm:text-[15px] txt-muted">${cMin}</span>
+            <span class="font-black text-[14px] sm:text-[15px] txt-primary">${cMax}</span>
           </div>
         </button>
       `;
@@ -542,8 +541,7 @@
 
       $('middle-title').textContent = `Saat ${timeStr}`;
       $('middle-subtitle').textContent = 'Seçilen saatin detayları';
-      $('middle-subtitle').classList.replace('text-sky-600', 'text-orange-600');
-      $('middle-subtitle').classList.replace('dark:text-sky-400', 'dark:text-orange-400');
+      $('middle-subtitle').className = "text-xs sm:text-sm text-orange-600 dark:text-orange-400 mt-0.5 font-semibold";
 
       const hAppTemp = getSafe(hourly, 'apparent_temperature')[hIdx];
       const hWind = getSafe(hourly, 'wind_speed_10m')[hIdx];
@@ -552,14 +550,13 @@
 
       $('param-temp-label').textContent = 'Hissedilen';
       $('param-temp-val').textContent = hAppTemp !== null ? Math.round(hAppTemp) + '°' : '--°';
-      $('param-wind-val').innerHTML = hWind !== null ? `${Math.round(hWind)}<span class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-semibold ml-1">km/s</span>` : '--';
+      $('param-wind-val').innerHTML = hWind !== null ? `${Math.round(hWind)}<span class="text-[10px] sm:text-[11px] font-semibold ml-1 txt-muted">km/s</span>` : '--';
       $('param-hum-label').textContent = 'Nem';
       $('param-hum-val').textContent = hHum !== null ? Math.round(hHum) + '%' : '--%';
-      $('param-precip-val').innerHTML = hPrecip !== null ? `${hPrecip.toFixed(1)}<span class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-semibold ml-1">mm</span>` : '--';
+      $('param-precip-val').innerHTML = hPrecip !== null ? `${hPrecip.toFixed(1)}<span class="text-[10px] sm:text-[11px] font-semibold ml-1 txt-muted">mm</span>` : '--';
 
     } else {
-      $('middle-subtitle').classList.replace('text-orange-600', 'text-sky-600');
-      $('middle-subtitle').classList.replace('dark:text-orange-400', 'dark:text-sky-400');
+      $('middle-subtitle').className = "text-xs sm:text-sm text-sky-600 dark:text-sky-400 mt-0.5 font-semibold";
       if(dayIndex === 0) {
         $('middle-title').textContent = 'Şu An';
         $('middle-subtitle').textContent = 'Anlık ölçümler';
@@ -571,10 +568,10 @@
 
         $('param-temp-label').textContent = 'Hissedilen';
         $('param-temp-val').textContent = appTemp !== null ? Math.round(appTemp) + '°' : '--°';
-        $('param-wind-val').innerHTML = windSpeed !== null ? `${Math.round(windSpeed)}<span class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-semibold ml-1">km/s</span>` : '--';
+        $('param-wind-val').innerHTML = windSpeed !== null ? `${Math.round(windSpeed)}<span class="text-[10px] sm:text-[11px] font-semibold ml-1 txt-muted">km/s</span>` : '--';
         $('param-hum-label').textContent = 'Anlık Nem';
         $('param-hum-val').textContent = relHum !== null ? Math.round(relHum) + '%' : '--%';
-        $('param-precip-val').innerHTML = precip !== null ? `${precip.toFixed(1)}<span class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-semibold ml-1">mm</span>` : '--';
+        $('param-precip-val').innerHTML = precip !== null ? `${precip.toFixed(1)}<span class="text-[10px] sm:text-[11px] font-semibold ml-1 txt-muted">mm</span>` : '--';
       } else {
         $('middle-title').textContent = dayLabel;
         $('middle-subtitle').textContent = 'Günlük özet tahmini';
@@ -584,10 +581,10 @@
 
         $('param-temp-label').textContent = 'Min / Max';
         $('param-temp-val').textContent = (dMin !== undefined && dMax !== undefined) ? `${Math.round(dMin)}° / ${Math.round(dMax)}°` : '--°';
-        $('param-wind-val').innerHTML = dWind !== undefined ? `${Math.round(dWind)}<span class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-semibold ml-1">Maks</span>` : '--';
+        $('param-wind-val').innerHTML = dWind !== undefined ? `${Math.round(dWind)}<span class="text-[10px] sm:text-[11px] font-semibold ml-1 txt-muted">Maks</span>` : '--';
         $('param-hum-label').textContent = 'Nem';
         $('param-hum-val').textContent = '--'; 
-        $('param-precip-val').innerHTML = dPrecip !== undefined ? `${dPrecip.toFixed(1)}<span class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 font-semibold ml-1">mm</span>` : '--';
+        $('param-precip-val').innerHTML = dPrecip !== undefined ? `${dPrecip.toFixed(1)}<span class="text-[10px] sm:text-[11px] font-semibold ml-1 txt-muted">mm</span>` : '--';
       }
     }
 
@@ -614,10 +611,10 @@
 
       hourlyHTML += `
         <div onclick="selectHour(${i})" class="hour-btn min-w-[70px] sm:min-w-[85px] p-3 sm:p-4 flex flex-col items-center justify-center border rounded-2xl snap-center shrink-0 ${op} ${bg}">
-          <span class="text-[11px] sm:text-[12px] text-slate-700 dark:text-slate-300 font-bold mb-1 sm:mb-2">${timeStr}</span>
+          <span class="text-[11px] sm:text-[12px] font-bold mb-1 sm:mb-2 txt-muted">${timeStr}</span>
           <div class="w-7 h-7 sm:w-10 sm:h-10 mb-1 sm:mb-2 svg-icon-wrapper">${wC[1]}</div>
-          <span class="text-lg sm:text-2xl font-black text-slate-900 dark:text-white mb-0.5 sm:mb-1">${hT}</span>
-          <span class="text-[9px] sm:text-[10px] font-bold text-slate-500 dark:text-slate-400">${hW} km/s</span>
+          <span class="text-lg sm:text-2xl font-black mb-0.5 sm:mb-1 txt-primary">${hT}</span>
+          <span class="text-[9px] sm:text-[10px] font-bold txt-muted">${hW} km/s</span>
         </div>
       `;
     }
