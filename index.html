@@ -7,10 +7,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --text-main: #0f172a;
-    --accent: #0ea5e9;
-  }
+  :root { --text-main: #0f172a; --accent: #0ea5e9; }
   
   body {
     font-family: 'Inter', sans-serif;
@@ -55,14 +52,14 @@
     100% { transform: translateY(110vh); opacity: 0; }
   }
   
-  /* Glassmorphism */
+  /* Daha Ferah Glassmorphism */
   .glass-panel {
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.6);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
-    border-radius: 1.25rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+    border-radius: 1.5rem;
   }
 
   .glass-input {
@@ -71,12 +68,17 @@
   }
 
   /* Modeller ve Gün Butonları */
-  .model-tab { transition: all 0.2s; color: #475569; border-bottom: 2px solid transparent; white-space: nowrap; }
-  .model-tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+  .model-tab { transition: all 0.2s; color: #475569; border-bottom: 2px solid transparent; white-space: nowrap; padding-bottom: 6px;}
+  .model-tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 700; }
 
   .day-btn { transition: all 0.2s; border: 1px solid transparent; }
   .day-btn:hover { background: rgba(255,255,255,0.7); }
   .day-btn.active { background: rgba(255,255,255,1); border-color: #bae6fd; box-shadow: inset 4px 0 0 var(--accent); }
+
+  /* Etkileşimli Saat Butonları */
+  .hour-btn { transition: transform 0.2s, background 0.2s, box-shadow 0.2s; cursor: pointer; }
+  .hour-btn:active { transform: scale(0.95); }
+  .hour-btn.active { background: rgba(224, 242, 254, 0.9); border-color: #7dd3fc; box-shadow: 0 4px 12px rgba(14, 165, 233, 0.15); transform: scale(1.05); z-index: 10; }
 
   /* Görünür Scrollbar */
   .custom-scroll { scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
@@ -88,172 +90,180 @@
   @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   .spin { animation: spin 1s linear infinite; }
   @keyframes spin { 100% { transform: rotate(360deg); } }
+
+  /* SVG İkonların ezilmesini önlemek için */
+  .svg-icon-wrapper svg { width: 100%; height: 100%; object-fit: contain; }
 </style>
 </head>
-<body class="antialiased py-4 sm:py-6 px-3 sm:px-6 relative">
+<body class="antialiased py-6 px-4 sm:px-8 relative">
 
 <div id="weather-fx" class="theme-clear"></div>
 
-<div class="max-w-[1400px] mx-auto flex flex-col gap-4 sm:gap-6 relative z-10">
+<div class="max-w-[1400px] mx-auto flex flex-col gap-6 sm:gap-8 relative z-10">
 
   <!-- Üst Menü -->
-  <header class="glass-panel px-4 sm:px-6 py-4 flex flex-col lg:flex-row items-center justify-between gap-4">
-    <div class="flex items-center gap-2 w-full lg:w-auto justify-center lg:justify-start">
-      <div class="w-8 h-8 rounded-lg bg-sky-500 text-white flex items-center justify-center shadow-md shrink-0">
-        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/></svg>
+  <header class="glass-panel px-5 sm:px-8 py-5 flex flex-col lg:flex-row items-center justify-between gap-5">
+    <div class="flex items-center gap-3 w-full lg:w-auto justify-center lg:justify-start">
+      <div class="w-10 h-10 rounded-xl bg-sky-500 text-white flex items-center justify-center shadow-md shrink-0">
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/></svg>
       </div>
-      <h1 class="text-xl font-bold text-slate-800 tracking-tight">Meteo<span class="text-sky-500">Pro</span></h1>
+      <h1 class="text-2xl font-bold text-slate-800 tracking-tight">Meteo<span class="text-sky-500">Pro</span></h1>
     </div>
     
     <!-- Arama Çubuğu -->
     <div class="relative w-full max-w-lg z-[100]">
-      <div class="glass-input flex items-center px-4 py-2.5 rounded-xl focus-within:ring-2 ring-sky-400 transition-all shadow-sm">
+      <div class="glass-input flex items-center px-5 py-3 rounded-2xl focus-within:ring-2 ring-sky-400 transition-all shadow-sm">
         <svg class="w-5 h-5 text-slate-500 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
         <input id="city-input" type="text" placeholder="Şehir ara... (Örn: İstanbul)" class="bg-transparent w-full outline-none text-slate-800 placeholder:text-slate-500 font-medium text-[16px]" autocomplete="off" />
         <div id="search-spinner" class="hidden text-sky-500 spin shrink-0"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></div>
       </div>
-      <!-- Şeffaflığı azaltılmış, tam görünür arama sonuçları -->
-      <div id="results-list" class="hidden absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-2xl border border-slate-200 overflow-hidden shadow-2xl rounded-xl max-h-60 overflow-y-auto p-1 z-[999]"></div>
+      <div id="results-list" class="hidden absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-2xl border border-slate-200 overflow-hidden shadow-2xl rounded-2xl max-h-64 overflow-y-auto p-2 z-[999]"></div>
     </div>
 
-    <!-- Modeller (Mobilde yana kaydırılabilir) -->
-    <div class="flex space-x-4 sm:space-x-6 w-full lg:w-auto justify-center lg:justify-end overflow-x-auto custom-scroll pb-1">
-      <button class="model-tab active pb-1 text-sm shrink-0" data-model="gfs_seamless">GFS</button>
-      <button class="model-tab pb-1 text-sm shrink-0" data-model="ecmwf_ifs025">ECMWF</button>
-      <button class="model-tab pb-1 text-sm shrink-0" data-model="icon_seamless">ICON</button>
+    <!-- Modeller -->
+    <div class="flex space-x-6 w-full lg:w-auto justify-center lg:justify-end overflow-x-auto custom-scroll pb-2">
+      <button class="model-tab active text-base shrink-0" data-model="gfs_seamless">GFS Modeli</button>
+      <button class="model-tab text-base shrink-0" data-model="ecmwf_ifs025">ECMWF Modeli</button>
+      <button class="model-tab text-base shrink-0" data-model="icon_seamless">ICON Modeli</button>
     </div>
   </header>
 
-  <div id="loading-state" class="hidden py-16 text-center text-slate-600 flex flex-col items-center glass-panel">
-    <svg class="w-8 h-8 spin text-sky-500 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-    Veriler işleniyor...
+  <div id="loading-state" class="hidden py-20 text-center text-slate-600 flex flex-col items-center glass-panel">
+    <svg class="w-10 h-10 spin text-sky-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+    <span class="text-lg font-medium">Meteorolojik veriler işleniyor...</span>
   </div>
-  <div id="error-state" class="hidden py-6 text-center text-red-600 glass-panel bg-red-50/90 border-red-200 font-medium"></div>
+  
+  <div id="error-state" class="hidden py-8 text-center text-red-600 glass-panel bg-red-50/90 border-red-200 font-semibold text-lg"></div>
 
   <!-- Ana Grid -->
-  <div id="data-state" class="fade-in hidden grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
+  <div id="data-state" class="fade-in hidden grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
     
     <!-- SOL KOLON -->
-    <div class="lg:col-span-3 flex flex-col gap-4 sm:gap-6">
+    <div class="lg:col-span-3 flex flex-col gap-6">
       
-      <!-- Ana Kart -->
-      <div class="glass-panel bg-gradient-to-br from-sky-500/95 to-blue-600/95 text-white p-5 sm:p-6 relative overflow-hidden shadow-xl border-0">
-        <h2 class="text-3xl font-bold mb-1 tracking-tight" id="location-name">İstanbul</h2>
-        <p class="text-sky-100 text-sm mb-6 font-medium" id="current-date">--</p>
+      <!-- Ana Kahraman Kartı -->
+      <div class="glass-panel bg-gradient-to-br from-sky-500/95 to-blue-600/95 text-white p-6 sm:p-8 relative overflow-hidden shadow-xl border-0 rounded-[2rem]">
+        <h2 class="text-3xl sm:text-4xl font-extrabold mb-1 tracking-tight" id="location-name">İstanbul</h2>
+        <p class="text-sky-100 text-sm sm:text-base mb-8 font-medium" id="current-date">--</p>
         <div class="flex items-center justify-between">
           <div>
-            <div class="text-6xl sm:text-7xl font-extrabold tracking-tighter drop-shadow-md" id="current-temp">--°</div>
-            <div class="text-lg sm:text-xl font-medium text-sky-100 mt-1" id="current-cond">--</div>
+            <div class="text-7xl sm:text-8xl font-black tracking-tighter drop-shadow-md" id="current-temp">--°</div>
+            <div class="text-xl sm:text-2xl font-semibold text-sky-100 mt-2" id="current-cond">--</div>
           </div>
-          <div id="current-icon" class="w-20 h-20 sm:w-24 sm:h-24 text-white drop-shadow-lg shrink-0"></div>
+          <div id="current-icon" class="w-24 h-24 sm:w-28 sm:h-28 text-white drop-shadow-xl shrink-0 svg-icon-wrapper"></div>
         </div>
       </div>
 
       <!-- Günlük Özet Metni -->
-      <div class="glass-panel p-4 sm:p-5">
-        <h3 class="text-[13px] font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2 mb-3">
-          <svg class="w-4 h-4 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          Günlük Özet
+      <div class="glass-panel p-5 sm:p-6 rounded-[1.5rem]">
+        <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2 mb-3">
+          <svg class="w-5 h-5 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Hava Özeti
         </h3>
-        <p id="daily-summary-text" class="text-sm text-slate-700 leading-relaxed font-medium">--</p>
+        <p id="daily-summary-text" class="text-[15px] text-slate-700 leading-relaxed font-medium">--</p>
       </div>
 
-      <!-- Ekstra Göstergeler (YENİ) -->
-      <div class="glass-panel p-4 sm:p-5">
-        <h3 class="text-[13px] font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2 mb-4">
-          <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
-          Günün Detayları
+      <!-- Ekstra Göstergeler -->
+      <div class="glass-panel p-5 sm:p-6 rounded-[1.5rem]">
+        <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2 mb-4">
+          <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+          Günlük Veriler
         </h3>
-        <div class="grid grid-cols-2 gap-3">
-          <div class="bg-white/60 rounded-xl p-3 border border-white/80">
-            <div class="text-[10px] text-slate-500 font-bold uppercase mb-1">UV Endeksi</div>
-            <div class="text-sm font-bold text-slate-800" id="extra-uv">--</div>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-white/70 rounded-2xl p-4 border border-white/90 shadow-sm">
+            <div class="text-xs text-slate-500 font-bold uppercase tracking-wide mb-1">UV Endeksi</div>
+            <div class="text-lg font-black text-slate-800" id="extra-uv">--</div>
           </div>
-          <div class="bg-white/60 rounded-xl p-3 border border-white/80">
-            <div class="text-[10px] text-slate-500 font-bold uppercase mb-1">Hava Kalitesi</div>
-            <div class="text-sm font-bold text-slate-800" id="extra-aqi">--</div>
+          <div class="bg-white/70 rounded-2xl p-4 border border-white/90 shadow-sm">
+            <div class="text-xs text-slate-500 font-bold uppercase tracking-wide mb-1">Hava Kalitesi</div>
+            <div class="text-lg font-black text-slate-800" id="extra-aqi">--</div>
           </div>
-          <div class="bg-white/60 rounded-xl p-3 border border-white/80">
-            <div class="text-[10px] text-slate-500 font-bold uppercase mb-1">Yağış Süresi</div>
-            <div class="text-sm font-bold text-slate-800" id="extra-rainh">--</div>
+          <div class="bg-white/70 rounded-2xl p-4 border border-white/90 shadow-sm">
+            <div class="text-xs text-slate-500 font-bold uppercase tracking-wide mb-1">Yağış Süresi</div>
+            <div class="text-lg font-black text-slate-800" id="extra-rainh">--</div>
           </div>
-          <div class="bg-white/60 rounded-xl p-3 border border-white/80">
-            <div class="text-[10px] text-slate-500 font-bold uppercase mb-1">Yıldırım Riske</div>
-            <div class="text-sm font-bold text-slate-800" id="extra-thunder">--</div>
+          <div class="bg-white/70 rounded-2xl p-4 border border-white/90 shadow-sm">
+            <div class="text-xs text-slate-500 font-bold uppercase tracking-wide mb-1">Yıldırım</div>
+            <div class="text-lg font-black text-slate-800" id="extra-thunder">--</div>
           </div>
         </div>
       </div>
     </div>
 
     <!-- ORTA KOLON -->
-    <div class="lg:col-span-6 flex flex-col gap-4 sm:gap-6 overflow-hidden">
-      <div class="glass-panel p-4 sm:p-6 flex flex-col w-full">
+    <div class="lg:col-span-6 flex flex-col gap-6 overflow-hidden">
+      <div class="glass-panel p-5 sm:p-8 flex flex-col w-full rounded-[2rem]">
         
-        <div class="mb-5">
-          <h2 class="text-xl sm:text-2xl font-bold text-slate-800" id="middle-title">Bugün</h2>
-          <p class="text-xs sm:text-sm text-slate-500 mt-1 font-medium" id="middle-subtitle">Günlük analiz</p>
+        <div class="mb-6 flex flex-col">
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-800" id="middle-title">Bugün</h2>
+          <p class="text-sm sm:text-base text-sky-600 mt-1 font-semibold" id="middle-subtitle">Günlük analiz</p>
         </div>
 
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
-          <div class="bg-white/60 rounded-2xl p-3 flex flex-col justify-center border border-white/80">
-            <div class="flex items-center gap-1.5 text-slate-500 mb-1.5">
-              <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-              <span class="text-[10px] font-bold uppercase" id="param-temp-label">Hissedilen</span>
+        <!-- Parametre Kartları -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-5 mb-8">
+          <div class="bg-white/70 rounded-2xl p-4 sm:p-5 flex flex-col justify-center border border-white/90 shadow-sm">
+            <div class="flex items-center gap-2 text-slate-500 mb-2">
+              <svg class="w-5 h-5 text-orange-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+              <span class="text-xs font-bold uppercase tracking-wider" id="param-temp-label">Hissedilen</span>
             </div>
-            <div class="text-xl sm:text-2xl font-bold text-slate-800" id="param-temp-val">--°</div>
+            <div class="text-2xl sm:text-3xl font-black text-slate-800" id="param-temp-val">--°</div>
           </div>
-          <div class="bg-white/60 rounded-2xl p-3 flex flex-col justify-center border border-white/80">
-            <div class="flex items-center gap-1.5 text-slate-500 mb-1.5">
-              <svg class="w-4 h-4 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-              <span class="text-[10px] font-bold uppercase">Rüzgar</span>
+          <div class="bg-white/70 rounded-2xl p-4 sm:p-5 flex flex-col justify-center border border-white/90 shadow-sm">
+            <div class="flex items-center gap-2 text-slate-500 mb-2">
+              <svg class="w-5 h-5 text-teal-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <span class="text-xs font-bold uppercase tracking-wider">Rüzgar</span>
             </div>
-            <div class="text-xl sm:text-2xl font-bold text-slate-800" id="param-wind-val">--</div>
+            <div class="text-2xl sm:text-3xl font-black text-slate-800" id="param-wind-val">--</div>
           </div>
-          <div class="bg-white/60 rounded-2xl p-3 flex flex-col justify-center border border-white/80">
-            <div class="flex items-center gap-1.5 text-slate-500 mb-1.5">
-              <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-              <span class="text-[10px] font-bold uppercase" id="param-hum-label">Nem</span>
+          <div class="bg-white/70 rounded-2xl p-4 sm:p-5 flex flex-col justify-center border border-white/90 shadow-sm">
+            <div class="flex items-center gap-2 text-slate-500 mb-2">
+              <svg class="w-5 h-5 text-blue-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+              <span class="text-xs font-bold uppercase tracking-wider" id="param-hum-label">Nem</span>
             </div>
-            <div class="text-xl sm:text-2xl font-bold text-slate-800" id="param-hum-val">--%</div>
+            <div class="text-2xl sm:text-3xl font-black text-slate-800" id="param-hum-val">--%</div>
           </div>
-          <div class="bg-white/60 rounded-2xl p-3 flex flex-col justify-center border border-white/80">
-            <div class="flex items-center gap-1.5 text-slate-500 mb-1.5">
-              <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/></svg>
-              <span class="text-[10px] font-bold uppercase">Yağış</span>
+          <div class="bg-white/70 rounded-2xl p-4 sm:p-5 flex flex-col justify-center border border-white/90 shadow-sm">
+            <div class="flex items-center gap-2 text-slate-500 mb-2">
+              <svg class="w-5 h-5 text-indigo-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/></svg>
+              <span class="text-xs font-bold uppercase tracking-wider">Yağış</span>
             </div>
-            <div class="text-xl sm:text-2xl font-bold text-slate-800" id="param-precip-val">--</div>
+            <div class="text-2xl sm:text-3xl font-black text-slate-800" id="param-precip-val">--</div>
           </div>
         </div>
 
-        <div class="mb-6 sm:mb-8 w-full">
-          <h3 class="text-[12px] font-bold text-slate-800 uppercase tracking-wider mb-3">Saatlik Tahmin</h3>
-          <div class="flex overflow-x-auto gap-3 pb-3 snap-x custom-scroll w-full" id="hourly-container">
+        <!-- Etkileşimli Saatlik Grafikler -->
+        <div class="mb-8 w-full">
+          <div class="flex items-center justify-between mb-4">
+             <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider">Saatlik Tahmin</h3>
+             <span class="text-xs font-semibold text-sky-600 bg-sky-100 px-3 py-1 rounded-full">Detaylar için tıklayın</span>
+          </div>
+          <div class="flex overflow-x-auto gap-4 pb-4 snap-x custom-scroll w-full px-1" id="hourly-container">
             <!-- JS -->
           </div>
         </div>
         
-        <!-- Radar Ekranı Güncellendi -->
+        <!-- Radar -->
         <div class="w-full">
-          <h3 class="text-[12px] font-bold text-slate-800 uppercase tracking-wider mb-3 flex items-center">
-            <svg class="w-4 h-4 mr-1.5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            Canlı Hava Radarı & Zaman Çizelgesi
+          <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider mb-4 flex items-center">
+            <svg class="w-5 h-5 mr-2 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            Canlı Hava Radarı
           </h3>
-          <div class="rounded-2xl overflow-hidden border border-white/80 shadow-sm bg-slate-200">
-            <iframe id="radar-iframe" class="w-full h-[260px] sm:h-[320px] bg-slate-200" src="" frameborder="0"></iframe>
+          <div class="rounded-3xl overflow-hidden border border-white/80 shadow-md bg-slate-200">
+            <iframe id="radar-iframe" class="w-full h-[300px] sm:h-[360px] bg-slate-200" src="" frameborder="0"></iframe>
           </div>
         </div>
 
       </div>
     </div>
 
-    <!-- SAĞ KOLON -->
+    <!-- SAĞ KOLON: 7 Günlük Tahmin -->
     <div class="lg:col-span-3">
-      <div class="glass-panel p-4">
-        <h3 class="text-[13px] font-bold text-slate-800 uppercase tracking-wider p-2 mb-2 flex items-center">
-          <svg class="w-4 h-4 mr-2 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+      <div class="glass-panel p-5 sm:p-6 rounded-[1.5rem]">
+        <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider p-1 mb-4 flex items-center">
+          <svg class="w-5 h-5 mr-2 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
           7 Günlük Tahmin
         </h3>
-        <div id="forecast-list" class="flex flex-col gap-1"></div>
+        <div id="forecast-list" class="flex flex-col gap-2"></div>
       </div>
     </div>
 
@@ -279,7 +289,7 @@
     0:['Açık', ICONS.sun, ICONS_WHITE.sun, 'clear'], 1:['Az Bulutlu', ICONS.cloudSun, ICONS_WHITE.cloudSun, 'clear'], 2:['Parçalı Bulutlu', ICONS.cloudSun, ICONS_WHITE.cloudSun, 'cloudy'], 3:['Çok Bulutlu', ICONS.cloud, ICONS_WHITE.cloud, 'cloudy'],
     45:['Sisli', ICONS.fog, ICONS_WHITE.fog, 'fog'], 48:['Kırağı Sisi', ICONS.fog, ICONS_WHITE.fog, 'fog'],
     51:['Hafif Çisenti', ICONS.rain, ICONS_WHITE.rain, 'rain'], 53:['Çisenti', ICONS.rain, ICONS_WHITE.rain, 'rain'], 55:['Yoğun Çisenti', ICONS.rain, ICONS_WHITE.rain, 'rain'],
-    61:['Hafif Yağmur', ICONS.rain, ICONS_WHITE.rain, 'rain'], 63:['Yağmurlu', ICONS.rain, ICONS_WHITE.rain, 'rain'], 65:['Şiddetli Yağmur', ICONS.rain, ICONS_WHITE.rain, 'rain'],
+    61:['Hafif Yağmur', ICONS.rain, ICONS_WHITE.rain, 'rain'], 63:['Yağmurlu', ICONS.rain, ICONS_WHITE.rain, 'rain'], 65:['Şidd. Yağmur', ICONS.rain, ICONS_WHITE.rain, 'rain'],
     71:['Hafif Kar', ICONS.snow, ICONS_WHITE.snow, 'snow'], 73:['Kar Yağışlı', ICONS.snow, ICONS_WHITE.snow, 'snow'], 75:['Yoğun Kar', ICONS.snow, ICONS_WHITE.snow, 'snow'], 77:['Kar', ICONS.snow, ICONS_WHITE.snow, 'snow'],
     80:['Sağanak', ICONS.rain, ICONS_WHITE.rain, 'rain'], 81:['Kuvv. Sağanak', ICONS.rain, ICONS_WHITE.rain, 'rain'], 82:['Şid. Sağanak', ICONS.rain, ICONS_WHITE.rain, 'rain'],
     95:['Fırtına', ICONS.thunder, ICONS_WHITE.thunder, 'thunder'], 96:['Dolu', ICONS.thunder, ICONS_WHITE.thunder, 'thunder'], 99:['Şid. Dolu', ICONS.thunder, ICONS_WHITE.thunder, 'thunder']
@@ -287,11 +297,10 @@
 
   let state = {
     lat: 41.0082, lon: 28.9784, name: 'İstanbul', country: 'Türkiye',
-    model: 'gfs_seamless', selectedDayIndex: 0, currentData: null, cache: {}
+    model: 'gfs_seamless', selectedDayIndex: 0, selectedHourIndex: null, currentData: null, cache: {}
   };
 
   const $ = (id) => document.getElementById(id);
-
   function getSafe(obj, key) {
     if (!obj) return null;
     if (obj[key] !== undefined) return obj[key];
@@ -306,29 +315,23 @@
   }
 
   function setWeatherFX(type) {
-    const bg = $('weather-fx');
-    bg.className = `theme-${type}`;
-    bg.innerHTML = ''; 
+    const bg = $('weather-fx'); bg.className = `theme-${type}`; bg.innerHTML = ''; 
     if (type === 'clear') { bg.innerHTML = '<div class="sun-flare"></div>'; } 
     else if (type === 'rain' || type === 'thunder') {
       for(let i=0; i<30; i++) {
-        let drop = document.createElement('div');
-        drop.className = 'raindrop'; drop.style.left = Math.random() * 100 + 'vw';
-        drop.style.animationDuration = (Math.random() * 0.3 + 0.4) + 's'; drop.style.animationDelay = Math.random() * 2 + 's';
-        bg.appendChild(drop);
+        let drop = document.createElement('div'); drop.className = 'raindrop'; drop.style.left = Math.random() * 100 + 'vw';
+        drop.style.animationDuration = (Math.random() * 0.3 + 0.4) + 's'; drop.style.animationDelay = Math.random() * 2 + 's'; bg.appendChild(drop);
       }
     } 
     else if (type === 'snow') {
       for(let i=0; i<40; i++) {
-        let flake = document.createElement('div');
-        flake.className = 'snowflake'; flake.style.left = Math.random() * 100 + 'vw';
-        flake.style.animationDuration = (Math.random() * 3 + 3) + 's'; flake.style.animationDelay = Math.random() * 5 + 's';
-        bg.appendChild(flake);
+        let flake = document.createElement('div'); flake.className = 'snowflake'; flake.style.left = Math.random() * 100 + 'vw';
+        flake.style.animationDuration = (Math.random() * 3 + 3) + 's'; flake.style.animationDelay = Math.random() * 5 + 's'; bg.appendChild(flake);
       }
     }
   }
 
-  // Şehir Arama
+  // Arama Modülü
   let searchTimer;
   $('city-input').addEventListener('input', (e) => {
     clearTimeout(searchTimer);
@@ -337,12 +340,11 @@
     $('search-spinner').classList.remove('hidden');
     searchTimer = setTimeout(async () => {
       try {
-        const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=5&language=tr&format=json`;
-        const res = await fetch(url);
+        const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=5&language=tr&format=json`);
         const json = await res.json();
         renderSearch(json.results || []);
       } catch (err) {
-        $('results-list').innerHTML = `<div class="p-3 text-sm text-red-500 font-bold">Arama başarısız.</div>`;
+        $('results-list').innerHTML = `<div class="p-4 text-[15px] text-red-500 font-bold">Arama başarısız.</div>`;
         $('results-list').classList.remove('hidden');
       } finally { $('search-spinner').classList.add('hidden'); }
     }, 450);
@@ -351,13 +353,13 @@
   function renderSearch(results){
     const box = $('results-list');
     if(!results.length){
-      box.innerHTML = `<div class="p-3 text-sm text-slate-500 font-bold">Sonuç bulunamadı.</div>`;
+      box.innerHTML = `<div class="p-4 text-[15px] text-slate-500 font-bold">Sonuç bulunamadı.</div>`;
       box.classList.remove('hidden'); return;
     }
     box.innerHTML = results.map((r, i) => `
-      <button data-idx="${i}" class="search-item w-full text-left px-4 py-3 hover:bg-slate-100 border-b border-slate-200 last:border-0 transition-colors">
-        <div class="text-sm font-bold text-slate-800">${r.name}</div>
-        <div class="text-xs text-slate-500 mt-0.5 font-medium">${r.admin1 ? r.admin1 + ', ' : ''}${r.country || ''}</div>
+      <button data-idx="${i}" class="search-item w-full text-left px-5 py-3 hover:bg-slate-100 border-b border-slate-200 last:border-0 transition-colors">
+        <div class="text-[16px] font-bold text-slate-800">${r.name}</div>
+        <div class="text-sm text-slate-500 mt-1 font-medium">${r.admin1 ? r.admin1 + ', ' : ''}${r.country || ''}</div>
       </button>
     `).join('');
     box.classList.remove('hidden');
@@ -379,11 +381,11 @@
     const key = `${state.lat.toFixed(3)},${state.lon.toFixed(3)},${model}`;
     if(state.cache[key]) return state.cache[key];
 
-    // UV, Yağış saati eklendi
+    // Saatlik parametrelere Hissedilen(apparent_temperature) ve Yağış(precipitation) eklendi
     const params = new URLSearchParams({
       latitude: state.lat, longitude: state.lon,
       current: 'temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,precipitation,weather_code',
-      hourly: 'temperature_2m,weather_code,wind_speed_10m,relative_humidity_2m',
+      hourly: 'temperature_2m,apparent_temperature,weather_code,wind_speed_10m,relative_humidity_2m,precipitation',
       daily: 'weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max,uv_index_max,precipitation_hours',
       forecast_days: 7, timezone: 'auto', models: model
     });
@@ -402,8 +404,8 @@
   }
 
   function getThunderRisk(code) {
-    if([95,96,99].includes(code)) return "Yüksek (Yoğun)";
-    if([80,81,82].includes(code)) return "Orta (Olası)";
+    if([95,96,99].includes(code)) return "Yüksek";
+    if([80,81,82].includes(code)) return "Orta";
     return "Beklenmiyor";
   }
 
@@ -431,12 +433,11 @@
     $('current-icon').innerHTML = condData[2]; 
     setWeatherFX(condData[3]);
 
-    // Radar overlay=radar yapıldı. Geçmiş 1 saat ve oynatılabilir timeline özelliği. Marker eklendi.
     const windyModel = state.model.split('_')[0]; 
-    $('radar-iframe').src = `https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=mm&metricTemp=%C2%B0C&metricWind=km%2Fh&zoom=8&overlay=radar&product=${windyModel}&level=surface&lat=${state.lat}&lon=${state.lon}&detailLat=${state.lat}&detailLon=${state.lon}&marker=true`;
+    $('radar-iframe').src = `https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=mm&metricTemp=%C2%B0C&metricWind=km%2Fh&zoom=7&overlay=radar&product=${windyModel}&level=surface&lat=${state.lat}&lon=${state.lon}&detailLat=${state.lat}&detailLon=${state.lon}&marker=true`;
 
     renderRightPanel();
-    renderMiddlePanel(state.selectedDayIndex);
+    renderMiddlePanel(state.selectedDayIndex, false);
   }
 
   function renderRightPanel() {
@@ -454,26 +455,35 @@
       const cMin = mins[i] !== undefined && mins[i] !== null ? Math.round(mins[i]) + '°' : '-';
       const cMax = maxes[i] !== undefined && maxes[i] !== null ? Math.round(maxes[i]) + '°' : '-';
 
+      // İkonların mobilde ezilmemesi için flex-row, justify-between ve ikon div'ine belirli bir boyut (w-10 h-10) ve shrink-0 verildi.
       return `
-        <button onclick="selectDay(${i})" class="day-btn ${isActive} w-full flex items-center justify-between p-3 sm:p-3.5 rounded-xl cursor-pointer text-sm mb-1">
-          <span class="w-16 text-left font-bold text-slate-700">${dayName}</span>
-          <div class="w-8 h-8 flex justify-center items-center shrink-0">${dayCond[1]}</div>
-          <div class="w-20 text-right flex justify-end gap-2 shrink-0">
-            <span class="text-slate-400 font-medium">${cMin}</span>
-            <span class="font-bold text-slate-800">${cMax}</span>
+        <button onclick="selectDay(${i})" class="day-btn ${isActive} w-full flex flex-row items-center justify-between p-4 rounded-2xl cursor-pointer mb-2">
+          <span class="text-[15px] text-left font-bold text-slate-800 w-16 sm:w-20">${dayName}</span>
+          <div class="w-10 h-10 flex justify-center items-center shrink-0 svg-icon-wrapper">${dayCond[1]}</div>
+          <div class="text-right flex justify-end gap-3 shrink-0 w-20 sm:w-24">
+            <span class="text-slate-400 font-bold text-[15px]">${cMin}</span>
+            <span class="font-black text-slate-800 text-[15px]">${cMax}</span>
           </div>
         </button>
       `;
     }).join('');
   }
 
+  // Gün Seçimi
   window.selectDay = function(index) {
     state.selectedDayIndex = index;
+    state.selectedHourIndex = null; // Gün değiştiğinde saat seçimini sıfırla
     renderRightPanel();
-    renderMiddlePanel(index);
+    renderMiddlePanel(index, false);
   }
 
-  function renderMiddlePanel(dayIndex) {
+  // Saat Seçimi
+  window.selectHour = function(hIndex) {
+    state.selectedHourIndex = hIndex;
+    renderMiddlePanel(state.selectedDayIndex, true);
+  }
+
+  function renderMiddlePanel(dayIndex, isHourClick) {
     const data = state.currentData;
     const cur = data.current || {};
     const daily = data.daily || {};
@@ -489,51 +499,81 @@
     const dCondStr = (WMO[dCode] ? WMO[dCode][0] : 'belirsiz').toLowerCase();
     const dayLabel = dayIndex === 0 ? "Bugün" : targetDate.toLocaleDateString('tr-TR', { weekday: 'long' });
     
-    // Günlük Özet
-    $('daily-summary-text').textContent = `${dayLabel} hava genel olarak ${dCondStr} olacak. Beklenen en yüksek sıcaklık ${Math.round(dMax)}°C, en düşük ise ${Math.round(dMin)}°C civarında seyredecek.`;
-
-    // Ekstra Göstergeler (Sol Panel Altı)
-    const uvMax = (getSafe(daily, 'uv_index_max') || [])[dayIndex];
-    const rainHours = (getSafe(daily, 'precipitation_hours') || [])[dayIndex];
-    let dailyAqi = null;
-    if(aqiData.hourly && aqiData.hourly.european_aqi) {
-        let hourIndex = dayIndex * 24 + 12; // Günün ortasındaki AQI (öğlen 12)
-        dailyAqi = aqiData.hourly.european_aqi[hourIndex];
+    // Yalnızca gün değiştiğinde veya ilk açılışta özetleri güncelle (Saat tıklandığında sol taraf sabit kalır)
+    if(!isHourClick) {
+      $('daily-summary-text').textContent = `${dayLabel} hava genel olarak ${dCondStr} olacak. Beklenen en yüksek sıcaklık ${Math.round(dMax)}°C, en düşük ise ${Math.round(dMin)}°C civarında seyredecek.`;
+      const uvMax = (getSafe(daily, 'uv_index_max') || [])[dayIndex];
+      const rainHours = (getSafe(daily, 'precipitation_hours') || [])[dayIndex];
+      let dailyAqi = null;
+      if(aqiData.hourly && aqiData.hourly.european_aqi) {
+          let hourIndex = dayIndex * 24 + 12;
+          dailyAqi = aqiData.hourly.european_aqi[hourIndex];
+      }
+      $('extra-uv').textContent = uvMax !== null ? uvMax.toFixed(1) : '--';
+      $('extra-aqi').textContent = getAqiLabel(dailyAqi);
+      $('extra-rainh').textContent = rainHours !== null ? `${rainHours} Saat` : '--';
+      $('extra-thunder').textContent = getThunderRisk(dCode);
     }
-    
-    $('extra-uv').textContent = uvMax !== null ? uvMax.toFixed(1) : '--';
-    $('extra-aqi').textContent = getAqiLabel(dailyAqi);
-    $('extra-rainh').textContent = rainHours !== null ? `${rainHours} Saat` : '--';
-    $('extra-thunder').textContent = getThunderRisk(dCode);
 
-    // Parametre Kartları
-    if(dayIndex === 0) {
-      $('middle-title').textContent = 'Bugün';
-      const appTemp = getSafe(cur, 'apparent_temperature');
-      const windSpeed = getSafe(cur, 'wind_speed_10m');
-      const relHum = getSafe(cur, 'relative_humidity_2m');
-      const precip = getSafe(cur, 'precipitation');
+    // --- PARAMETRELERİ GÜNCELLE (Saatlik veya Günlük) ---
+    if(state.selectedHourIndex !== null) {
+      // SAATLİK DETAY GÖSTERİMİ
+      const hIdx = state.selectedHourIndex;
+      const hTime = getSafe(hourly, 'time')[hIdx];
+      const timeStr = new Date(hTime).getHours().toString().padStart(2, '0') + ':00';
+
+      $('middle-title').textContent = `Saat ${timeStr} Tahmini`;
+      $('middle-subtitle').textContent = 'Seçilen saatin detayları';
+      $('middle-subtitle').classList.replace('text-sky-600', 'text-orange-500');
+
+      const hAppTemp = getSafe(hourly, 'apparent_temperature')[hIdx];
+      const hWind = getSafe(hourly, 'wind_speed_10m')[hIdx];
+      const hHum = getSafe(hourly, 'relative_humidity_2m')[hIdx];
+      const hPrecip = getSafe(hourly, 'precipitation')[hIdx];
 
       $('param-temp-label').textContent = 'Hissedilen';
-      $('param-temp-val').textContent = appTemp !== null ? Math.round(appTemp) + '°' : '--°';
-      $('param-wind-val').innerHTML = windSpeed !== null ? `${Math.round(windSpeed)}<span class="text-[11px] text-slate-500 font-medium ml-1">km/s</span>` : '--';
-      $('param-hum-label').textContent = 'Anlık Nem';
-      $('param-hum-val').textContent = relHum !== null ? Math.round(relHum) + '%' : '--%';
-      $('param-precip-val').innerHTML = precip !== null ? `${precip.toFixed(1)}<span class="text-[11px] text-slate-500 font-medium ml-1">mm</span>` : '--';
-    } else {
-      $('middle-title').textContent = dayLabel;
-      const dWind = (getSafe(daily, 'wind_speed_10m_max') || [])[dayIndex];
-      const dPrecip = (getSafe(daily, 'precipitation_sum') || [])[dayIndex];
+      $('param-temp-val').textContent = hAppTemp !== null ? Math.round(hAppTemp) + '°' : '--°';
+      $('param-wind-val').innerHTML = hWind !== null ? `${Math.round(hWind)}<span class="text-[12px] text-slate-500 font-semibold ml-1">km/s</span>` : '--';
+      $('param-hum-label').textContent = 'Nem';
+      $('param-hum-val').textContent = hHum !== null ? Math.round(hHum) + '%' : '--%';
+      $('param-precip-val').innerHTML = hPrecip !== null ? `${hPrecip.toFixed(1)}<span class="text-[12px] text-slate-500 font-semibold ml-1">mm</span>` : '--';
 
-      $('param-temp-label').textContent = 'Min - Max';
-      $('param-temp-val').textContent = (dMin !== undefined && dMax !== undefined) ? `${Math.round(dMin)}° / ${Math.round(dMax)}°` : '--°';
-      $('param-wind-val').innerHTML = dWind !== undefined ? `${Math.round(dWind)}<span class="text-[11px] text-slate-500 font-medium ml-1">Maks</span>` : '--';
-      $('param-hum-label').textContent = 'Tahmini';
-      $('param-hum-val').textContent = '--'; 
-      $('param-precip-val').innerHTML = dPrecip !== undefined ? `${dPrecip.toFixed(1)}<span class="text-[11px] text-slate-500 font-medium ml-1">mm</span>` : '--';
+    } else {
+      // GÜNLÜK/ANLIK DETAY GÖSTERİMİ
+      $('middle-subtitle').classList.replace('text-orange-500', 'text-sky-600');
+
+      if(dayIndex === 0) {
+        $('middle-title').textContent = 'Şu An';
+        $('middle-subtitle').textContent = 'Anlık ölçümler';
+        
+        const appTemp = getSafe(cur, 'apparent_temperature');
+        const windSpeed = getSafe(cur, 'wind_speed_10m');
+        const relHum = getSafe(cur, 'relative_humidity_2m');
+        const precip = getSafe(cur, 'precipitation');
+
+        $('param-temp-label').textContent = 'Hissedilen';
+        $('param-temp-val').textContent = appTemp !== null ? Math.round(appTemp) + '°' : '--°';
+        $('param-wind-val').innerHTML = windSpeed !== null ? `${Math.round(windSpeed)}<span class="text-[12px] text-slate-500 font-semibold ml-1">km/s</span>` : '--';
+        $('param-hum-label').textContent = 'Anlık Nem';
+        $('param-hum-val').textContent = relHum !== null ? Math.round(relHum) + '%' : '--%';
+        $('param-precip-val').innerHTML = precip !== null ? `${precip.toFixed(1)}<span class="text-[12px] text-slate-500 font-semibold ml-1">mm</span>` : '--';
+      } else {
+        $('middle-title').textContent = dayLabel;
+        $('middle-subtitle').textContent = 'Günlük özet tahmini';
+        
+        const dWind = (getSafe(daily, 'wind_speed_10m_max') || [])[dayIndex];
+        const dPrecip = (getSafe(daily, 'precipitation_sum') || [])[dayIndex];
+
+        $('param-temp-label').textContent = 'Min / Max';
+        $('param-temp-val').textContent = (dMin !== undefined && dMax !== undefined) ? `${Math.round(dMin)}° / ${Math.round(dMax)}°` : '--°';
+        $('param-wind-val').innerHTML = dWind !== undefined ? `${Math.round(dWind)}<span class="text-[12px] text-slate-500 font-semibold ml-1">Maks</span>` : '--';
+        $('param-hum-label').textContent = 'Nem';
+        $('param-hum-val').textContent = '--'; 
+        $('param-precip-val').innerHTML = dPrecip !== undefined ? `${dPrecip.toFixed(1)}<span class="text-[12px] text-slate-500 font-semibold ml-1">mm</span>` : '--';
+      }
     }
 
-    // Saatlik Grafik
+    // --- SAATLİK GRAFİKLERİN ÇİZİMİ ---
     const hTime = getSafe(hourly, 'time') || [];
     const hTemp = getSafe(hourly, 'temperature_2m') || [];
     const hCode = getSafe(hourly, 'weather_code') || [];
@@ -549,44 +589,54 @@
       const hourDate = new Date(hTime[i]);
       const hourNum = hourDate.getHours();
       const timeStr = hourNum.toString().padStart(2, '0') + ':00';
+      
       const wC = WMO[hCode[i]] || ['?', ICONS.sun];
       const isPast = (dayIndex === 0 && hourNum < currentHour);
-      const op = isPast ? 'opacity-50' : 'opacity-100';
-      const bg = (dayIndex === 0 && hourNum === currentHour) ? 'bg-sky-100/90 border-sky-300 ring-1 ring-sky-300' : 'bg-white/70 border-white/90';
+      const isSelected = (state.selectedHourIndex === i);
+      
+      let op = isPast ? 'opacity-50' : 'opacity-100';
+      if(isSelected) op = 'opacity-100';
+
+      // Seçili saatin görünümünü patlat (highlight)
+      const bg = isSelected ? 'active' : ((dayIndex === 0 && hourNum === currentHour) ? 'bg-sky-100/90 border-sky-300 ring-2 ring-sky-300' : 'bg-white/70 border-white/90');
       const hT = hTemp[i] !== null ? Math.round(hTemp[i]) + '°' : '-';
       const hW = hWind[i] !== null ? Math.round(hWind[i]) : '-';
 
       hourlyHTML += `
-        <div class="min-w-[70px] sm:min-w-[80px] p-3 sm:p-4 flex flex-col items-center justify-center border rounded-2xl snap-center shrink-0 ${op} ${bg} transition-all shadow-sm">
-          <span class="text-[10px] sm:text-[11px] text-slate-500 font-bold mb-2">${timeStr}</span>
-          <div class="w-6 h-6 sm:w-8 sm:h-8 mb-2">${wC[1]}</div>
-          <span class="text-base sm:text-lg font-bold text-slate-800 mb-0.5">${hT}</span>
-          <span class="text-[9px] sm:text-[10px] font-medium text-slate-500">${hW} km/s</span>
+        <div onclick="selectHour(${i})" class="hour-btn min-w-[76px] sm:min-w-[90px] p-4 flex flex-col items-center justify-center border rounded-2xl snap-center shrink-0 ${op} ${bg}">
+          <span class="text-[12px] text-slate-600 font-bold mb-2">${timeStr}</span>
+          <div class="w-8 h-8 sm:w-10 sm:h-10 mb-2 svg-icon-wrapper">${wC[1]}</div>
+          <span class="text-xl sm:text-2xl font-black text-slate-800 mb-1">${hT}</span>
+          <span class="text-[10px] sm:text-[11px] font-bold text-slate-500">${hW} km/s</span>
         </div>
       `;
     }
     const container = $('hourly-container');
     container.innerHTML = hourlyHTML;
     
-    if(dayIndex === 0) {
-      setTimeout(() => {
-        const itemWidth = window.innerWidth < 640 ? (70+12) : (80+12);
-        container.scrollTo({ left: Math.max(0, (currentHour - 1) * itemWidth), behavior: 'smooth' });
-      }, 150);
-    } else {
-      container.scrollTo({ left: 0, behavior: 'smooth' });
+    // Kaydırma İşlemi (Sadece saat tıklanmadıysa kaydır)
+    if(!isHourClick) {
+      if(dayIndex === 0) {
+        setTimeout(() => {
+          const itemWidth = window.innerWidth < 640 ? (76+16) : (90+16);
+          container.scrollTo({ left: Math.max(0, (currentHour - 1) * itemWidth), behavior: 'smooth' });
+        }, 150);
+      } else {
+        container.scrollTo({ left: 0, behavior: 'smooth' });
+      }
     }
   }
 
   async function loadWeather(){
     showState('loading');
     state.selectedDayIndex = 0; 
+    state.selectedHourIndex = null;
     try {
       const data = await fetchWeather(state.model);
       renderApp(data);
       showState('data'); 
     } catch(err) {
-      $('error-state').textContent = 'Verilere ulaşılamıyor. Lütfen tekrar deneyin.';
+      $('error-state').textContent = 'Verilere ulaşılamıyor. İnternet bağlantınızı kontrol edin.';
       showState('error');
     }
   }
