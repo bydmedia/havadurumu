@@ -3,28 +3,50 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>MeteoPro Hava</title>
 
-<!-- iOS PWA Ayarları -->
+<!-- Temel SEO Optimizasyonu -->
+<title>Havasal - Canlı Hava Durumu ve Radar</title>
+<meta name="description" content="Havasal ile anlık hava durumu, saatlik tahminler, 7 günlük hava durumu ve canlı radar haritalarına anında ulaşın. GFS, ECMWF ve ICON modelleri ile detaylı analiz.">
+<meta name="keywords" content="havasal, hava durumu, canlı radar, meteoroloji, anlık hava durumu, yağış, rüzgar, fırtına, türkiye hava durumu, malatya hava durumu">
+<meta name="author" content="Byd Media">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://havasal.com.tr/">
+
+<!-- Open Graph (WhatsApp, Facebook vb. paylaşımlar için önizleme) -->
+<meta property="og:title" content="Havasal - Canlı Hava Durumu ve Radar">
+<meta property="og:description" content="Bulunduğunuz konumun en güncel hava durumu verilerini, saatlik tahminlerini ve canlı yağış radarını Havasal güvencesiyle takip edin.">
+<meta property="og:url" content="https://havasal.com.tr/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Havasal">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Havasal - Canlı Hava Durumu">
+<meta name="twitter:description" content="Anlık hava durumu, saatlik tahminler ve canlı radar haritaları.">
+
+<!-- iOS PWA Ayarları ve Favicon (Özel Havasal Logosu) -->
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="MeteoPro">
+<meta name="apple-mobile-web-app-title" content="Havasal">
 <meta name="theme-color" content="#0ea5e9">
-<link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1163/1163661.png">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%230ea5e9' rx='128'/%3E%3Ccircle cx='256' cy='220' r='90' fill='%23f59e0b'/%3E%3Cpath d='M160 340a70 70 0 0 1 0-140 c10 0 20 2 28 6 a90 90 0 0 1 164 -20 a60 60 0 0 1 8 114 H160z' fill='%23ffffff'/%3E%3Ctext x='256' y='325' font-family='sans-serif' font-weight='900' font-size='100' fill='%230ea5e9' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%230ea5e9' rx='128'/%3E%3Ccircle cx='256' cy='220' r='90' fill='%23f59e0b'/%3E%3Cpath d='M160 340a70 70 0 0 1 0-140 c10 0 20 2 28 6 a90 90 0 0 1 164 -20 a60 60 0 0 1 8 114 H160z' fill='%23ffffff'/%3E%3Ctext x='256' y='325' font-family='sans-serif' font-weight='900' font-size='100' fill='%230ea5e9' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E">
 <link rel="manifest" id="manifest-link">
 
 <script>
+  // Dinamik Manifest (Android ve PWA Kurulumu için)
   const manifestData = {
-    "name": "MeteoPro Hava Durumu",
-    "short_name": "MeteoPro",
-    "start_url": window.location.href,
+    "name": "Havasal Hava Durumu",
+    "short_name": "Havasal",
+    "start_url": "https://havasal.com.tr/",
     "display": "standalone",
     "background_color": "#e2e8f0",
     "theme_color": "#0ea5e9",
     "icons": [{
-      "src": "https://cdn-icons-png.flaticon.com/512/1163/1163661.png",
+      "src": "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%230ea5e9' rx='128'/%3E%3Ccircle cx='256' cy='220' r='90' fill='%23f59e0b'/%3E%3Cpath d='M160 340a70 70 0 0 1 0-140 c10 0 20 2 28 6 a90 90 0 0 1 164 -20 a60 60 0 0 1 8 114 H160z' fill='%23ffffff'/%3E%3Ctext x='256' y='325' font-family='sans-serif' font-weight='900' font-size='100' fill='%230ea5e9' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     }]
   };
   const manifestString = JSON.stringify(manifestData);
@@ -88,14 +110,20 @@
 
 <div id="weather-fx" class="theme-clear"></div>
 
-<div class="max-w-[1400px] mx-auto flex flex-col gap-4 sm:gap-8 relative z-10">
+<main class="max-w-[1400px] mx-auto flex flex-col gap-4 sm:gap-8 relative z-10">
 
   <header class="glass-panel px-4 sm:px-8 py-4 sm:py-5 flex flex-col lg:flex-row items-center justify-between gap-5">
     <div class="flex items-center gap-3 w-full lg:w-auto justify-center lg:justify-start">
-      <div class="w-10 h-10 rounded-xl bg-sky-500 text-white flex items-center justify-center shadow-md shrink-0">
-        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/></svg>
+      <!-- Yeni Havasal Logosu -->
+      <div class="w-10 h-10 flex items-center justify-center shrink-0">
+        <svg viewBox="0 0 512 512" class="w-full h-full drop-shadow-md">
+          <rect width="512" height="512" fill="#0ea5e9" rx="128"/>
+          <circle cx="256" cy="220" r="90" fill="#f59e0b"/>
+          <path d="M160 340a70 70 0 0 1 0-140 c10 0 20 2 28 6 a90 90 0 0 1 164 -20 a60 60 0 0 1 8 114 H160z" fill="#ffffff"/>
+          <text x="256" y="325" font-family="sans-serif" font-weight="900" font-size="100" fill="#0ea5e9" text-anchor="middle">H</text>
+        </svg>
       </div>
-      <h1 class="text-2xl font-bold text-slate-800 tracking-tight">Meteo<span class="text-sky-500">Pro</span></h1>
+      <h1 class="text-2xl font-bold text-slate-800 tracking-tight">Hava<span class="text-sky-500">sal</span></h1>
     </div>
     
     <div class="relative w-full max-w-lg z-[100]">
@@ -230,8 +258,7 @@
             Canlı Hava Radarı
           </h3>
           <div class="rounded-3xl overflow-hidden border border-white/80 shadow-md bg-slate-200">
-            <!-- Windy Iframe Geri Getirildi -->
-            <iframe id="radar-iframe" class="w-full h-[250px] sm:h-[360px] bg-slate-200" src="" frameborder="0"></iframe>
+            <iframe id="radar-iframe" class="w-full h-[250px] sm:h-[360px] bg-slate-200" src="" frameborder="0" title="Canlı Hava Radarı"></iframe>
           </div>
         </div>
 
@@ -250,7 +277,14 @@
     </div>
 
   </div>
-</div>
+</main>
+
+<!-- Yeni Eklenen Alt Bilgi Çubuğu (Footer Bar) -->
+<footer class="max-w-[1400px] mx-auto mt-4 sm:mt-6 glass-panel px-4 py-4 flex items-center justify-center relative z-10 text-center shadow-sm">
+  <span class="text-xs sm:text-sm font-semibold text-slate-600 tracking-wide">
+    Bir <strong class="text-sky-600 font-extrabold tracking-normal">BYD Media</strong> kuruluşudur. Tüm hakları saklıdır.
+  </span>
+</footer>
 
 <div id="ios-pwa-prompt" class="hidden fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-white/95 backdrop-blur-xl border border-slate-200 shadow-2xl rounded-2xl p-4 w-[90%] max-w-sm z-[9999] text-center">
   <p class="text-[15px] font-bold text-slate-800 mb-2">Uygulamayı iPhone'a Yükle!</p>
